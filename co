@@ -1,0 +1,35 @@
+from airflow import DAG
+from airflow.utils.dates import days_ago
+from airflow.exceptions import AirflowException
+from datetime import timedelta
+
+# Assuming the CustomOperator code you provided is in a file named `custom_operator.py`
+from custom_operator import CustomOperator
+
+# Define default_args for the DAG
+default_args = {
+    'owner': 'airflow',
+    'depends_on_past': False,
+    'start_date': days_ago(1),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
+
+# Define the DAG
+with DAG(
+    'example_custom_operator_dag',
+    default_args=default_args,
+    description='DAG using CustomOperator',
+    schedule_interval=timedelta(days=1),
+) as dag:
+
+    # Define the custom task using your CustomOperator
+    custom_task = CustomOperator(
+        task_id='test_custom_task',               # Task ID in Airflow
+        test_status='succeed_before',             # We can set test_status to see custom behavior (e.g. "succeed_before")
+        no_upstream_failed_ids=[],                # Define tasks that should not have failed before this task
+    )
+
+    custom_task  # You can add more tasks here and chain them if necessary
