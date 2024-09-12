@@ -33,3 +33,27 @@ with DAG(
     )
 
     custom_task  # You can add more tasks here and chain them if necessary
+
+
+
+# Define a DAG with taskA, taskB, and custom_task
+
+taskA = CustomOperator(
+    task_id='taskA',
+    test_status=None,
+)
+
+taskB = CustomOperator(
+    task_id='taskB',
+    test_status=None,
+)
+
+custom_task = CustomOperator(
+    task_id='test_custom_task',
+    test_status='succeed_before',       # Custom behavior (e.g., "succeed_before")
+    no_upstream_failed_ids=['taskA', 'taskB'],  # Dependencies that must not fail
+)
+
+# Define task dependencies
+taskA >> taskB >> custom_task
+
