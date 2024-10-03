@@ -56,5 +56,4 @@ custom_task = CustomOperator(
 
 # Define task dependencies
 taskA >> taskB >> custom_task
-
-rak
+custom_task
